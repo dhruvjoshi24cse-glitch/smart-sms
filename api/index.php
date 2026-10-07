@@ -32,7 +32,7 @@ function tbl($h, $r) {
     foreach ($r as $row) { $o .= '<tr>'; foreach ($row as $c) $o .= '<td>' . $c . '</td>'; $o .= '</tr>'; }
     return $o . ($r ? '' : '<tr><td colspan=' . count($h) . ' class=muted>No records</td></tr>') . '</table></div>';
 }
-function stat($i, $v, $l) { return '<div class=stat><div class=ic>' . $i . '</div><div><b>' . e($v) . '</b><small>' . e($l) . '</small></div></div>'; }
+function statc($i, $v, $l) { return '<div class=stat><div class=ic>' . $i . '</div><div><b>' . e($v) . '</b><small>' . e($l) . '</small></div></div>'; }
 function view($t, $b) {
     $u = me(); $m = $_SESSION['m'] ?? ''; unset($_SESSION['m']);
     echo '<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>' . e($t) . ' - Smart SMS</title><link rel=stylesheet href="/assets/style.css"></head>';
@@ -83,9 +83,9 @@ case 'dash':
         $a = rows("SELECT COUNT(*) t, SUM(status='P') p FROM attendance WHERE student_id=?", [$u['id']])[0];
         $due = one('SELECT COALESCE(SUM(amount),0) FROM fees WHERE student_id=? AND paid=0', [$u['id']]);
         $avg = one('SELECT AVG(score/max_score*100) FROM marks WHERE student_id=?', [$u['id']]);
-        $o .= stat('✅', $a['t'] ? round($a['p'] / $a['t'] * 100) . '%' : '-', 'Attendance') . stat('💰', $due, 'Fees due') . stat('📝', $avg !== null ? round($avg) . '%' : '-', 'Average marks') . stat('🎓', 'Class ' . $u['cl'], 'Your class');
+        $o .= statc('✅', $a['t'] ? round($a['p'] / $a['t'] * 100) . '%' : '-', 'Attendance') . statc('💰', $due, 'Fees due') . statc('📝', $avg !== null ? round($avg) . '%' : '-', 'Average marks') . statc('🎓', 'Class ' . $u['cl'], 'Your class');
     } else {
-        $o .= stat('🎓', one("SELECT COUNT(*) FROM users WHERE role='student'"), 'Students') . stat('👩‍🏫', one("SELECT COUNT(*) FROM users WHERE role='faculty'"), 'Faculty') . stat('📅', one('SELECT COUNT(*) FROM events WHERE date>=CURDATE()'), 'Upcoming events') . stat('📚', one('SELECT COUNT(*) FROM notes'), 'Notes');
+        $o .= statc('🎓', one("SELECT COUNT(*) FROM users WHERE role='student'"), 'Students') . statc('👩‍🏫', one("SELECT COUNT(*) FROM users WHERE role='faculty'"), 'Faculty') . statc('📅', one('SELECT COUNT(*) FROM events WHERE date>=CURDATE()'), 'Upcoming events') . statc('📚', one('SELECT COUNT(*) FROM notes'), 'Notes');
     }
     view('Dashboard', $o . '</div>');
 
